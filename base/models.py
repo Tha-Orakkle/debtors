@@ -32,20 +32,22 @@ class Transaction(models.Model):
         ('new_transaction', 'new_transaction'),
     ]
     """Represents the Transaction Object"""
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True) # can't be null
     transaction_type = models.CharField(max_length=16, choices=TRANSACTION_TYPES)
     prev_amount = models.DecimalField(max_digits=11, decimal_places=2, null=True)
-    new_amount = models.DecimalField(max_digits=11, decimal_places=2)
+    new_amount = models.DecimalField(max_digits=11, decimal_places=2) # can be null
     amount_paid = models.DecimalField(max_digits=11, decimal_places=2, null=True)
     balance = models.DecimalField(max_digits=11, decimal_places=2)
     date_of_payment = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    class Meta:
+        ordering = ['-created_at']
 
-    def __str__(self):
-        return f"<{self.id} : Transaction> {self.customer.name}\n \
-        - Total Amount : {self.new_amount}\n \
-        - Amount Paid  : {self.amount_paid}\n \
-        - Balance      : {self.balance}\n "
+    # def __str__(self):
+    #     return f"<{self.id} : Transaction> {self.customer.name}\n \
+    #     - Total Amount : {self.new_amount}\n \
+    #     - Amount Paid  : {self.amount_paid}\n \
+    #     - Balance      : {self.balance}\n " # add_previous amount to this
     

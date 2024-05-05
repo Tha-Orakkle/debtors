@@ -1,8 +1,9 @@
 from base.models import Organisation
-from .serializers import OrganisationSerializer
-from .error_views import CustomAPIException
 from rest_framework import status
 from rest_framework.views import APIView, Response
+from .serializers import OrganisationSerializer
+from .error_views import CustomAPIException
+
 
 class OrganisationView(APIView):
     """API endpoint for the Organisation"""

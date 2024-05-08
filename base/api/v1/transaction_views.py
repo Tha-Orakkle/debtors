@@ -65,6 +65,32 @@ class TransactionView(APIView):
     def put(self, request, pk=None):
         if pk is None:
             raise CustomAPIException("Invalid Transaction Id", status.HTTP_400_BAD_REQUEST)
+        transaction  = self.get_object(pk)
+        transaction_type = request.data.get('transacton_type')
+        prev_debt = transaction.prev_amount
+        ap = request.data.get('amount_paid')
+        amount_paid = decimalConvertStr(ap) if ap else Decimal(0)       
+        
+        if transaction_type == 'payment':
+            if amount_paid == 0:
+                raise CustomAPIException("Missing Value", status.HTTP_400_BAD_REQUEST)
+            transaction.new_amount = Decimal(0)
+            transaction.balance = prev_debt - amount_paid
+        elif transaction_type == 'new_transaction':
+            na = request.data.get('new_amount')
+            transaction.new_amount = decimalConvertStr(na)
+            transaction.balance = (prev_debt + transaction.new_amount) - amount_paid
+        else:
+            raise CustomAPIException("Invalid transaction_type", status.HTTP_400_BAD_REQUEST)
+        
+        transaction.amount_paid = amount_paid
+        transaction.transaction_type = transaction_type
+        transaction.save()
+        serializer = TransactionSerializer(transaction)
+        return Response(serializer.data)
+
+        
+        
         
         
 

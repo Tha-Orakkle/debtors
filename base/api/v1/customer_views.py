@@ -2,19 +2,20 @@ from base.models import Customer
 from rest_framework import status
 from rest_framework.views import APIView, Response
 from .error_views import CustomAPIException
+from .helper import get_object
 from .serializers import CustomerSerializer
 
 class CustomerView(APIView):
     """Customer Model API endpoints"""
-    def get_object(self, pk):
-        try:
-            return Customer.objects.get(pk=pk)
-        except Customer.DoesNotExist:
-            raise CustomAPIException("Customer Does not Exist", status.HTTP_400_BAD_REQUEST)
+    # def get_object(self, pk):
+    #     try:
+    #         return Customer.objects.get(pk=pk)
+    #     except Customer.DoesNotExist:
+    #         raise CustomAPIException("Customer Does not Exist", status.HTTP_400_BAD_REQUEST)
         
     def get(self, request, pk=None):
         if pk is not None:
-            customer = self.get_object(pk)
+            customer = get_object(Customer, pk)
             serializer = CustomerSerializer(customer)
             return Response(serializer.data)
         customers = Customer.objects.all()
@@ -40,7 +41,7 @@ class CustomerView(APIView):
         
     def put(self, request, pk=None):
         if pk is not None:
-            customer = self.get_object(pk)
+            customer = get_object(Customer, pk)
             serializer = CustomerSerializer(customer, data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -49,7 +50,7 @@ class CustomerView(APIView):
         
     def delete(self, request, pk=None):
         if pk is not None:
-            customer = self.get_object(pk)
+            customer = get_object(Customer, pk)
             customer.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
         

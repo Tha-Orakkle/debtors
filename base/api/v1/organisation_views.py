@@ -2,21 +2,22 @@ from base.models import Organisation
 from rest_framework import status
 from rest_framework.views import APIView, Response
 from .serializers import OrganisationSerializer
+from .helper import get_object
 from .error_views import CustomAPIException
 
 
 class OrganisationView(APIView):
     """API endpoint for the Organisation"""
 
-    def get_object(self, pk):
-        try:
-            return Organisation.objects.get(pk=pk)
-        except Organisation.DoesNotExist:
-            raise CustomAPIException("Organisation Does Not Exist", status.HTTP_400_BAD_REQUEST)
+    # def get_object(self, pk):
+    #     try:
+    #         return Organisation.objects.get(pk=pk)
+    #     except Organisation.DoesNotExist:
+    #         raise CustomAPIException("Organisation Does Not Exist", status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, pk=None):
         if pk is not None:
-            organisation = self.get_object(pk)
+            organisation = get_object(Organisation, pk)
             serializer = OrganisationSerializer(organisation)
             return Response(serializer.data)
         
@@ -44,7 +45,7 @@ class OrganisationView(APIView):
         
     def put(self, request, pk=None):
         if pk is not None:
-            organisation = self.get_object(pk)
+            organisation = get_object(Organisation, pk)
             serializer = OrganisationSerializer(organisation, data=request.data)
             if serializer.is_valid():
                 serializer.save()
@@ -54,6 +55,6 @@ class OrganisationView(APIView):
 
     def delete(self, request, pk=None):
         if pk is not None:
-            organisation = self.get_object(pk)
+            organisation = get_object(Organisation, pk)
             organisation.delete()
             return Response(status=status.HTTP_204_NO_CONTENT)

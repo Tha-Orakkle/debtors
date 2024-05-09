@@ -16,4 +16,32 @@ class TransactionView(APIView):
             return Response(serializer.data)
         transactions = Transaction.objects.all()
         serializer = TransactionSerializer(transactions, many=True)
-        return Response(serializer.data) 
+        return Response(serializer.data)
+    
+
+
+# A Debtors view that returns a list of all debtors with their last transaction
+
+class DebtorsView(APIView):
+    def get(self, request):
+        sum = Decimal(0)
+        debtors = []
+        customers = Customer.objects.all()
+        for customer in customers:
+            customer_tran = customer.transaction_set.first()
+            if customer_tran:
+                if customer_tran.balance > 0:
+                    debtors.append({
+                        'name': customer.name,
+                        'amount_owed': customer_tran.balance,
+                    })
+                    sum += customer_tran.balance
+        debtors.append({
+            'total_debt': sum
+        })
+        return Response(debtors)
+    
+
+class CustomerSearchView(APIView):
+    def get(self, request):
+        pass

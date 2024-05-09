@@ -39,6 +39,8 @@ class Customer(models.Model):
     def __str__(self):
         return f"<{self.id} : Customer> {self.name}"
 
+
+# implement mode of payment: cash or bank transaction
 class Transaction(models.Model):
     TRANSACTION_TYPES = [
         ('payment', 'payment'),

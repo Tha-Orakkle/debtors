@@ -3,9 +3,13 @@ from .customer_views import CustomerView
 from .organisation_views import OrganisationView
 from .transaction_views import TransactionView, DebtorsView
 from .customer_transaction_views import CustomerTransactionView
+from .user_views import UserCreateView, UserSignInView, UserView
 
 
 urlpatterns = [
+    path('create-user/', UserCreateView.as_view()),
+    path('sign-in/', UserSignInView.as_view()),
+    path('users/', UserView.as_view()),
     path('organisations/', OrganisationView.as_view()),
     path('organisations/<int:pk>', OrganisationView.as_view()),
     path('customers/', CustomerView.as_view()),

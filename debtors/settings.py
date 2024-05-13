@@ -39,12 +39,13 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework.authtoken',
 
     # my apps 
     'base.apps.BaseConfig',
 ]
 
-# AUTH_USER_MODEL= 'base.User'
+AUTH_USER_MODEL= 'base.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

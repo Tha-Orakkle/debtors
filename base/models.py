@@ -13,7 +13,7 @@ class User(AbstractUser):
     
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username'] 
 
     def __str__(self):
         return f"<{self.id} : User> {self.email}"
@@ -25,7 +25,7 @@ class Organisation(models.Model):
     name = models.CharField(max_length=128)
     address = models.TextField()
     telephone = PhoneNumberField(null=True)
-    email = models.EmailField(null=True)
+    email = models.EmailField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 
@@ -35,7 +35,7 @@ class Organisation(models.Model):
 class Customer(models.Model):
     """Represents the Customer Object"""
     name = models.CharField(max_length=128)
-    telephone = PhoneNumberField(null=True)
+    telephone = PhoneNumberField(null=True, blank=True)
     organisation = models.ForeignKey(Organisation, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -58,7 +58,7 @@ class Transaction(models.Model):
     prev_amount = models.DecimalField(max_digits=11, decimal_places=2, default=Decimal(0))
     new_amount = models.DecimalField(max_digits=11, decimal_places=2, null=True) 
     amount_paid = models.DecimalField(max_digits=11, decimal_places=2, null=True)
-    mode_of_payment = models.CharField(max_length=20, choices=MODE_OF_PAYMENT)
+    mode_of_payment = models.CharField(max_length=20, choices=MODE_OF_PAYMENT, null=True)
     balance = models.DecimalField(max_digits=12, decimal_places=2)
     date_of_payment = models.DateTimeField(default=timezone.now)
     created_at = models.DateTimeField(auto_now_add=True)

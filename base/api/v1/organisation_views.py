@@ -1,5 +1,7 @@
 from base.models import Organisation
 from rest_framework import status
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, Response
 from .serializers import OrganisationSerializer
 from .helper import get_object
@@ -7,24 +9,25 @@ from .error_views import CustomAPIException
 
 
 class OrganisationView(APIView):
-    """API endpoint for the Organisation"""
-
-    # def get_object(self, pk):
-    #     try:
-    #         return Organisation.objects.get(pk=pk)
-    #     except Organisation.DoesNotExist:
-    #         raise CustomAPIException("Organisation Does Not Exist", status.HTTP_400_BAD_REQUEST)
+    """API endpoint for requests relating to the Organisation Model """
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, pk=None):
+        """gets list of all Organisation objects or 
+        specific Organisation object owned by the authenticated user"""
+        user = request.user
         if pk is not None:
-            organisation = get_object(Organisation, pk)
+            organisation = user.organisation_set.filter(id=pk).first()
+            if not organisation:
+                raise CustomAPIException("Organisation Does Not Exist", status.HTTP_400_BAD_REQUEST)
             serializer = OrganisationSerializer(organisation)
             return Response(serializer.data)
-        
-        organisations = Organisation.objects.all()
+        organisations = user.organisation_set.all()
         serializer = OrganisationSerializer(organisations, many=True)
         return Response(serializer.data)
-    
+
+
     
     # some changes to be effected
     # validating the owner of the organisation before creating the organisation object

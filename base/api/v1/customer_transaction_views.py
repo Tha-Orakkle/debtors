@@ -8,6 +8,7 @@ from .helper import get_object, strConvertDecimal, updateLaterTransactions
 from .serializers import TransactionSerializer
 
 
+
 class CustomerTransactionView(APIView):
     """Class Based View for customer-specific transactions"""
 
@@ -27,6 +28,10 @@ class CustomerTransactionView(APIView):
         transaction_type = request.data.get('transaction_type')
         ap = request.data.get('amount_paid')
         amount_paid = strConvertDecimal(ap) if ap else Decimal(0)
+        mode = request.data.get("mode_of_payment") if amount_paid > 0 else None
+        if amount_paid > 0:
+            if mode != "cash" and mode != "bank_transaction":
+                raise CustomAPIException("Invalid Mode Of Payment", status.HTTP_400_BAD_REQUEST)
 
         if transaction_type == 'payment':
             if not last_transaction:
@@ -51,7 +56,9 @@ class CustomerTransactionView(APIView):
                 prev_amount=prev_debt,
                 new_amount=new_amount,
                 amount_paid=amount_paid,
+                mode_of_payment=mode,
                 balance=balance
+
             )
         serializer = TransactionSerializer(new_transaction)
         return Response(serializer.data)

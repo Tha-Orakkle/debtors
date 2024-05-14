@@ -39,12 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework.authtoken',
 
     # my apps 
     'base.apps.BaseConfig',
 ]
 
-# AUTH_USER_MODEL= 'base.User'
+
+AUTH_USER_MODEL= 'base.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -130,3 +132,16 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# my authentication Backend configuration
+AUTHENTICATION_BACKENDS = [
+    'base.backends.authenticate.EmailAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}

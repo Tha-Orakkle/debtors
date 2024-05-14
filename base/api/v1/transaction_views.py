@@ -24,6 +24,8 @@ class TransactionView(APIView):
 
 class DebtorsView(APIView):
     def get(self, request):
+        """this endpoint will return a list of all still owing debtors
+        this will be in form of the last transaction of all the customers"""
         sum = Decimal(0)
         debtors = []
         customers = Customer.objects.all()
@@ -31,15 +33,13 @@ class DebtorsView(APIView):
             customer_tran = customer.transaction_set.first()
             if customer_tran:
                 if customer_tran.balance > 0:
-                    debtors.append({
-                        'name': customer.name,
-                        'amount_owed': customer_tran.balance,
-                    })
+                    debtors.append(customer_tran)
                     sum += customer_tran.balance
-        debtors.append({
-            'total_debt': sum
+        serializer = TransactionSerializer(debtors, many=True)
+        return Response({
+            "total_debt": sum,
+            "debtors": serializer.data
         })
-        return Response(debtors)
     
 
 class CustomerSearchView(APIView):

@@ -6,3 +6,15 @@ POST http://127.0.0.1:8000/api/v1/create-user/
 Content-Type: application/json
 
 {"email": "paul@email.com", "password": "example123#"}
+
+
+###
+POST http://127.0.0.1:8000/api/v1/login/
+Content-Type: application/json
+
+{"email": "paul@email.com", "password": "example123#"}
+
+
+###
+GET 127.0.0.1:8000/api/v1/debtors
+

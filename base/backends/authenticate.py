@@ -2,7 +2,6 @@ from base.models import User
 from django.contrib.auth.backends import ModelBackend
 from django.utils import timezone
 from datetime import timedelta
-# from rest_framework.views import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import AuthenticationFailed
@@ -29,5 +28,5 @@ class ExpiredTokenAuthentication(TokenAuthentication):
         current_time = timezone.now()
         if token.created < current_time - timedelta(days=1):
             raise AuthenticationFailed("Token Has Expired")
-        
+
         return token.user, token

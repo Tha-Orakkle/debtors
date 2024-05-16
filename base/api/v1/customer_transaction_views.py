@@ -8,7 +8,6 @@ from .helper import get_object, strConvertDecimal, updateLaterTransactions
 from .serializers import TransactionSerializer
 
 
-
 class CustomerTransactionView(APIView):
     """Class Based View for customer-specific transactions"""
 

@@ -7,12 +7,6 @@ from phonenumber_field.modelfields import PhoneNumberField
 import uuid
 
 
-class CustomToken(Token):
-    expires_at = models.DateTimeField()
-
-    def is_expired(self):
-        return self.expires_at < timezone.now()
-
 class User(AbstractUser):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(unique=True)

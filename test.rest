@@ -5,7 +5,7 @@ GET http://127.0.0.1:8000/api/v1/customers
 POST http://127.0.0.1:8000/api/v1/create-user/
 Content-Type: application/json
 
-{"email": "paul@email.com", "password": "example123#"}
+{"email": "paul@email.com", "password": "example123#", "first_name": "Paul", "last_name": "David"}
 
 
 ###
@@ -16,5 +16,6 @@ Content-Type: application/json
 
 
 ###
-GET 127.0.0.1:8000/api/v1/debtors
+GET http://127.0.0.1:8000/api/v1/organisations
+Authorization: Token 120ee175e7cba45cf6884c321ce807e04d148ffd
 

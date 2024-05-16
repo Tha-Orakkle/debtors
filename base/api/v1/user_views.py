@@ -1,4 +1,6 @@
+from datetime import timedelta
 from django.contrib.auth import authenticate
+from django.utils import timezone
 from rest_framework.views import APIView, Response
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -43,13 +45,19 @@ class UserLoginView(APIView):
         
         user = authenticate(username=email, password=password)
         if user is not None:
-            token, _ = Token.objects.get_or_create(user=user)
+            token, created = Token.objects.get_or_create(user=user)
+            current_time = timezone.now()
+            if not created and token.created < current_time - timedelta(days=1):
+                token.delete()
+                token = Token.objects.create(user=user)
             serializer = UserSerializer(instance=user)
             return Response({"token": token.key, "user": serializer.data},
                             status=status.HTTP_200_OK)
         return Response({"error": "Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED) 
 
-# 
+
+
+
 class UserView(APIView): #This must be visible to only admins
     """Handles requests relating to the User Model"""
 

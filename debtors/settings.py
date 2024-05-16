@@ -142,6 +142,7 @@ AUTHENTICATION_BACKENDS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'base.backends.authenticate.ExpiredTokenAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ),
 }

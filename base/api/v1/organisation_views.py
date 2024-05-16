@@ -6,11 +6,12 @@ from rest_framework.views import APIView, Response
 from .serializers import OrganisationSerializer
 from .helper import get_object
 from .error_views import CustomAPIException
+from base.backends.authenticate import ExpiredTokenAuthentication
 
 
 class OrganisationView(APIView):
     """API endpoint for requests for Organisations"""
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [ExpiredTokenAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request, pk=None):
@@ -53,7 +54,7 @@ class OrganisationView(APIView):
         organisation = get_object(Organisation, pk)
         if organisation.owner.id != request.user.id:
             raise CustomAPIException("You Do Not Own The Organization", status.HTTP_400_BAD_REQUEST)
-        serializer = OrganisationSerializer(organisation, data=request.data)
+        serializer = OrganisationSerializer(organisation, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)

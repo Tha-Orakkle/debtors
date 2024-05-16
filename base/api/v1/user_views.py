@@ -1,5 +1,6 @@
 from datetime import timedelta
 from django.contrib.auth import authenticate
+from django.utils import timezone
 from rest_framework.views import APIView, Response
 from rest_framework import status
 # from rest_framework.authtoken.models import Token
@@ -26,7 +27,7 @@ class UserCreateView(APIView):
                 user = User.objects.get(email=email)
                 user.set_password(request.data.get('password'))
                 user.save()
-                token = CustomToken.objects.create(user=user, expires_at=timedelta(min=5))
+                token = CustomToken.objects.create(user=user, expires_at=(timezone.now() + timedelta(min=5)))
                 return Response({"token": token.key, 'user': serializer.data}, 
                                 status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

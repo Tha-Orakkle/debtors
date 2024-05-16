@@ -1,8 +1,9 @@
+from datetime import timedelta
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView, Response
 from rest_framework import status
-from rest_framework.authtoken.models import Token
-from base.models import User
+# from rest_framework.authtoken.models import Token
+from base.models import User, CustomToken
 from .error_views import CustomAPIException
 from .helper import get_object
 from .serializers import UserSerializer
@@ -25,7 +26,7 @@ class UserCreateView(APIView):
                 user = User.objects.get(email=email)
                 user.set_password(request.data.get('password'))
                 user.save()
-                token = Token.objects.create(user=user)
+                token = CustomToken.objects.create(user=user, expires_at=timedelta(min=5))
                 return Response({"token": token.key, 'user': serializer.data}, 
                                 status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -43,7 +44,7 @@ class UserLoginView(APIView):
         
         user = authenticate(username=email, password=password)
         if user is not None:
-            token, _ = Token.objects.get_or_create(user=user)
+            token, _ = CustomToken.objects.get_or_create(user=user)
             serializer = UserSerializer(instance=user)
             return Response({"token": token.key, "user": serializer.data},
                             status=status.HTTP_200_OK)

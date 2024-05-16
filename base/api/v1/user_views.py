@@ -3,8 +3,8 @@ from django.contrib.auth import authenticate
 from django.utils import timezone
 from rest_framework.views import APIView, Response
 from rest_framework import status
-# from rest_framework.authtoken.models import Token
-from base.models import User, CustomToken
+from rest_framework.authtoken.models import Token
+from base.models import User
 from .error_views import CustomAPIException
 from .helper import get_object
 from .serializers import UserSerializer
@@ -27,7 +27,7 @@ class UserCreateView(APIView):
                 user = User.objects.get(email=email)
                 user.set_password(request.data.get('password'))
                 user.save()
-                token = CustomToken.objects.create(user=user, expires_at=(timezone.now() + timedelta(min=5)))
+                token = Token.objects.create(user=user)
                 return Response({"token": token.key, 'user': serializer.data}, 
                                 status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -45,13 +45,19 @@ class UserLoginView(APIView):
         
         user = authenticate(username=email, password=password)
         if user is not None:
-            token, _ = CustomToken.objects.get_or_create(user=user)
+            token, created = Token.objects.get_or_create(user=user)
+            current_time = timezone.now()
+            if not created and token.created < current_time - timedelta(days=1):
+                token.delete()
+                token = Token.objects.create(user=user)
             serializer = UserSerializer(instance=user)
             return Response({"token": token.key, "user": serializer.data},
                             status=status.HTTP_200_OK)
         return Response({"error": "Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED) 
 
-# 
+
+
+
 class UserView(APIView): #This must be visible to only admins
     """Handles requests relating to the User Model"""
 

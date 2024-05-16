@@ -1,10 +1,11 @@
-from datetime import timedelta
-from django.contrib.auth.base_user import AbstractBaseUser
-from django.utils import timezone
-from base.models import User, CustomToken
+from base.models import User
 from django.contrib.auth.backends import ModelBackend
-from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.views import Response 
+from django.utils import timezone
+from datetime import timedelta
+# from rest_framework.views import Response
+from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.exceptions import AuthenticationFailed
 
 
 class EmailAuthBackend(ModelBackend):
@@ -17,17 +18,16 @@ class EmailAuthBackend(ModelBackend):
             return None
 
 
-class CustomAuthToken(ObtainAuthToken):
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-
-        token, created = CustomToken.objects.get_or_create(user=user)
-        if not created and token.is_expired():
-            token.delete()
-            CustomToken.objects.create(user=user, expires_at=timedelta(min=5))
-        elif created:
-            token.expires_at = timezone.now() + timedelta(min=5)
-            token.save()
-        return Response({"token": token.key})
+class ExpiredTokenAuthentication(TokenAuthentication):
+    def authenticate_credentials(self, key):
+        print("This is being used")
+        try:
+            token = Token.objects.get(key=key)
+        except Token.DoesNotExist:
+            raise AuthenticationFailed("Invalid Token")
+        
+        current_time = timezone.now()
+        if token.created < current_time - timedelta(days=1):
+            raise AuthenticationFailed("Token Has Expired")
+        
+        return token.user, token

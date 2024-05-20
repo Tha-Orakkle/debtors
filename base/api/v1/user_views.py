@@ -6,7 +6,6 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from base.models import User
 from .error_views import CustomAPIException
-from .helper import get_object
 from .serializers import UserSerializer
 
 
@@ -54,20 +53,3 @@ class UserLoginView(APIView):
             return Response({"token": token.key, "user": serializer.data},
                             status=status.HTTP_200_OK)
         return Response({"error": "Invalid Credentials"}, status=status.HTTP_401_UNAUTHORIZED) 
-
-
-
-
-class UserView(APIView): #This must be visible to only admins
-    """Handles requests relating to the User Model"""
-
-    def get(self, request, pk=None):
-        """gets a list of all users or a specific user"""
-        if pk is not None:
-            user = get_object(User, pk)
-            serializer = UserSerializer(user)
-            return Response(serializer.data)
-        users = User.objects.all()
-        serializer = UserSerializer(users, many=True)
-        return Response(serializer.data)
-    

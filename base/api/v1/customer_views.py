@@ -5,7 +5,6 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from base.backends.authenticate import ExpiredTokenAuthentication    
 from .error_views import CustomAPIException
-from .helper import get_object
 from .serializers import CustomerSerializer
 
 class CustomerView(APIView):

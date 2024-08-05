@@ -1,0 +1,33 @@
+GET http://127.0.0.1:8000/api/v1/customers
+
+
+###
+POST http://127.0.0.1:8000/api/v1/create-user/
+Content-Type: application/json
+
+{"email": "paul@email.com", "password": "example123#", "first_name": "Paul", "last_name": "Savvy"}
+
+
+###
+POST http://127.0.0.1:8000/api/v1/login/
+Content-Type: application/json
+
+{"email": "paul@email.com", "password": "example123#"}
+
+
+###
+GET http://127.0.0.1:8000/api/v1/organisations
+Authorization: Token ab0fbc3ca7ec639d1162b95aa5d3785e60b9bacc
+
+
+###
+POST http://127.0.0.1:8000/api/v1/127.0.0.1:8000/api/v1/organisations/
+Authorization: Token ab0fbc3ca7ec639d1162b95aa5d3785e60b9bacc
+Content-Type: application/json
+
+{"name": "GFSC", "email": "gfsc@example.com",
+"telephone": 08129114555, "address": "faculty of law"}
+
+
+###
+GET http://127.0.0.1:8000/api/v1/users

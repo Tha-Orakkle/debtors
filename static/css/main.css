@@ -1,0 +1,84 @@
+/* // <uniquifier>: Use a unique and descriptive class name
+// <weight>: Use a value from 100 to 900 */
+
+/* --------------General------------------- */
+* {
+    box-sizing: border-box;
+}
+
+body {
+  font-family: "Montserrat", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.hidden {
+    display: none;
+}
+
+.required {
+    color: red;
+}
+
+
+/* ------------- LOGIN / REGISTRATION --------------- */
+
+.login-container {
+    display: grid;
+    grid-template-columns: 0.8fr 1fr;
+}
+
+
+.login-container-item input {
+    width: 100%;
+    height: 50px;
+    border-radius: 10px;
+    border: 1px solid #c4c4c4;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    padding: 0 15px;
+}
+
+.login-container-item input[type="submit"] {
+    background-color: #a8d8b9;
+    font-weight: 300;
+}
+
+.login-container-item input[type="submit"]:hover {
+    background-color: #85be99;
+}
+
+#login-form-wrapper, #register-form-wrapper {
+    margin-left: auto;
+    margin-right: auto;
+    width: 60%;
+}
+
+#register-form-wrapper {
+    margin-top: 50px;
+}
+#login-form-wrapper {
+    margin-top: 80px;
+}
+
+#create-form {
+    overflow-y: scroll;
+    max-height: 500px;
+}
+
+.form-header {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom:70px;
+}
+.create-or-sign {
+    font-size: 13px;
+    text-align: end;
+}
+
+.create-or-sign a {
+    /* text-decoration: none; */
+    color: #808080;
+}
+

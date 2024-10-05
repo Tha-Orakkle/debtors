@@ -12,9 +12,9 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
     other_name = models.CharField(max_length=32, null=True, blank=True)
-    telephone = PhoneNumberField(null=True)
+    telephone = PhoneNumberField(null=True, blank=True)
     email = models.EmailField(unique=True)
-    username = models.CharField(max_length=128, null=True)
+    username = models.CharField(max_length=128, null=True, blank=True)
     
     USERNAME_FIELD = 'email'
     EMAIL_FIELD = 'email'

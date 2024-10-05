@@ -5,7 +5,7 @@ from django.shortcuts import render, redirect
 import requests
 
 from .models import User
-from .forms import UserCreationForm
+from .forms import CustomUserCreationForm
 from base.backends.decorators import token_required
 
 
@@ -30,10 +30,10 @@ def loginPage(request):
             pass
 
     if request.method == 'POST':
-        username = request.POST.get('username').lower()
+        email = request.POST.get('email').lower()
         password = request.POST.get('password')
 
-        user = authenticate(request, username=username, password=password)
+        user = authenticate(request, username=email, password=password)
         if user:
             res = requests.post('http://127.0.0.1:8000/api/v1/token/', data={
                 'user_id': user.id})
@@ -53,14 +53,15 @@ def loginPage(request):
 
 def registerPage(request):
     """This view handles registration of User"""
-    form = UserCreationForm()
+    form = CustomUserCreationForm()
 
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.username = user.username.lower()
-            user.set_password(request.POST.get('password'))
+            if user.username:
+                user.username = user.username.lower()
+            user.set_password(request.POST.get('password1'))
             user.save()
             res = requests.post('http://127.0.0.1:8000/api/v1/token/', data={
                 'user_id': user.id})

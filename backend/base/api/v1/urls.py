@@ -4,9 +4,13 @@ from .customer_views import CustomerView
 from .organisation_views import OrganisationView, DebtorsView
 from .customer_transaction_views import CustomerTransactionView
 from .user_views import UserCreateView, UserLoginView
+from .tokens import TokenGenerationView
 
 
 urlpatterns = [
+    # generate token
+    path('token/', TokenGenerationView.as_view()),
+    
     # User Creation and Login
     path('create-user/', UserCreateView.as_view()),
     path('login/', UserLoginView.as_view()),

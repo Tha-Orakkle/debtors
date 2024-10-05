@@ -6,14 +6,19 @@
     <title>Document</title>
   </head>
   <body>
+    {% if messages %}
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+    {% endif %}
     <h1>LOGIN/REG</h1>
     {% if page == 'login' %}
     <form method="POST" action="">
       {% csrf_token %}
-      <label for="username">Username</label>
+      <label for="username">Email</label>
       <input type="text" name="username" id="username" />
 
-      <label for="password">Username</label>
+      <label for="password">Password</label>
       <input type="password" name="password" id="password" />
 
       <input type="submit" value="Login" />

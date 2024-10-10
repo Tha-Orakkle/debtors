@@ -59,6 +59,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    'base.backends.middleware.TokenCookieToHeaderMiddleware',
 ]
 
 ROOT_URLCONF = 'debtors.urls'

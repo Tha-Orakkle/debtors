@@ -37,22 +37,22 @@ class OrganisationView(APIView):
         try:
             name = request.data.get('name')
             if not name:
-                raise CustomAPIException("Name not valid", status.HTTP_400_BAD_REQUEST)
+                raise CustomAPIException("Name not valid!", status.HTTP_400_BAD_REQUEST)
             if Organisation.objects.get(name=name):
-                raise CustomAPIException("Organisation already exists", status.HTTP_400_BAD_REQUEST)
+                raise CustomAPIException("Organisation already exists!", status.HTTP_400_BAD_REQUEST)
         except Organisation.DoesNotExist:
             serializer = OrganisationSerializer(data=request.data)
             if serializer.is_valid():
                 serializer.validated_data['owner'] = user
                 serializer.save()
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
     def put(self, request, pk=None):
         """Updates an Organisation Object"""
         organisation = request.user.organisation_set.filter(id=pk).first()
         if not organisation:
-            raise CustomAPIException("Organisation Does Not Exist", status.HTTP_400_BAD_REQUEST)
+            raise CustomAPIException("Organisation Does Not Exist!", status.HTTP_400_BAD_REQUEST)
         serializer = OrganisationSerializer(organisation, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
@@ -64,7 +64,7 @@ class OrganisationView(APIView):
         """Delete an Organisation Object"""
         organisation = request.user.organisation_set.filter(id=pk).first()
         if not organisation:
-            raise CustomAPIException("Organisation Does Not Exist", status.HTTP_400_BAD_REQUEST)
+            raise CustomAPIException("Organisation Does Not Exist!", status.HTTP_400_BAD_REQUEST)
         organisation.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     

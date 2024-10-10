@@ -33,6 +33,8 @@ class Organisation(models.Model):
     email = models.EmailField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    total_debt = models.DecimalField(max_digits=11, decimal_places=2, default=Decimal(0))
+
 
     def __str__(self):
         return f"<{self.id} : Organisation> {self.name}"

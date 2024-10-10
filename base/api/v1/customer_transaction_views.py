@@ -43,6 +43,8 @@ class CustomerTransactionView(APIView):
 
         if not customer:
             raise CustomAPIException("Invalid Organisation/Customer Id", status.HTTP_400_BAD_REQUEST)
+        
+        organisation = customer.organisation
 
         last_transaction = customer.transaction_set.first()
 
@@ -85,8 +87,9 @@ class CustomerTransactionView(APIView):
                 amount_paid=amount_paid,
                 mode_of_payment=mode,
                 balance=balance
-
             )
+        organisation.total_debt = (organisation.total_debt -  prev_debt) + balance
+        organisation.save()
         serializer = TransactionSerializer(new_transaction)
         return Response(serializer.data)
     
@@ -100,6 +103,8 @@ class CustomerTransactionView(APIView):
 
         if not customer:
             raise CustomAPIException("Invalid Organisation/Customer Id", status.HTTP_400_BAD_REQUEST)
+        
+        organisation = customer.organisation
 
         transaction = customer.transaction_set.filter(id=kwargs.get('tran_id')).first()
         if not transaction:
@@ -110,6 +115,7 @@ class CustomerTransactionView(APIView):
         )
         transaction_type = request.data.get('transaction_type')
         prev_debt = transaction.prev_amount
+        prev_bal = transaction.balance
         ap = request.data.get('amount_paid')
         amount_paid = strConvertDecimal(ap) if ap else Decimal(0)
 
@@ -141,6 +147,8 @@ class CustomerTransactionView(APIView):
         transaction.transaction_type = transaction_type
         balance = transaction.balance
         transaction.save()
+        organisation.total_debt = (organisation.total_debt - prev_bal) + balance
+        organisation.save()
         updateLaterTransactions(list(later_transactions), balance)
         serializer = TransactionSerializer(transaction)
         return Response(serializer.data) 
@@ -154,6 +162,9 @@ class CustomerTransactionView(APIView):
 
         if not customer:
             raise CustomAPIException("Invalid Organisation/Customer Id", status.HTTP_400_BAD_REQUEST)
+        
+        organisation = customer.organisation
+        
 
         transaction = customer.transaction_set.filter(id=kwargs.get('tran_id')).first()
         if not transaction:
@@ -163,6 +174,13 @@ class CustomerTransactionView(APIView):
             Q(created_at__gt=transaction.created_at)
         )
         balance = transaction.prev_amount
+        na = transaction.new_amount
+        ap = transaction.amount_paid
+        
         transaction.delete()
+        if transaction.transaction_type == 'new_transaction':
+            organisation.total_debt -= na
+        organisation.total_debt += ap
+        organisation.save()
         updateLaterTransactions(list(later_transactions), balance)
         return Response(status=status.HTTP_204_NO_CONTENT)

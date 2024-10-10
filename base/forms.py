@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import User
+from .models import User, Organisation
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -10,3 +10,9 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = ["username", "first_name", "last_name", "other_name",
                   "email", "telephone", "password1", "password2"]
+
+
+class CreateOrganisationForm(forms.ModelForm):
+    class Meta:
+        model = Organisation
+        fields = ["name", "email", "address"]

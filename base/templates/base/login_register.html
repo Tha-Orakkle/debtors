@@ -6,13 +6,18 @@
 <div class="login-container">
   
   <div id="login-bg" class="login-container-item">
-    <!-- <img src="{% static 'images/bg-login.jpg' %}" alt=""> -->
+    <img src="{% static 'images/bg-login_2.png' %}" alt="" id="">
+    <!-- icon  -->
+    <!-- <p>DEBTORS</p> -->
   </div>
   
   <div id="login-form-wrapper" class="login-container-item{% if page != 'login' %} hidden{% endif %}">
     <h1 class="form-header">Log In</h1>
     <form action="" method="post" id="login-form">
       {% csrf_token %}
+
+      {% include "messages.html" %}
+      
       <div class="form-item">
         <label for="_email">Email address</label><br>
         <input type="email" name="email" id="_email" placeholder="example@email.com">
@@ -37,6 +42,9 @@
     <h1 class="form-header">Register as a Business Owner</h1>
     <form action="" method="post" id="create-form">
       {% csrf_token %}
+
+      {% include "messages.html" %}
+
       <div class="form-item">
         <label for="username">Username</label><br>
         <input type="text" name="username" id="username">

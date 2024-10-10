@@ -1,20 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <h1>Home Page</h1>
-    <p>This is just to test this page!</p>
-    {% if request.user.is_authenticated %}
-    <p>Hello {{ request.user.username }}!</p>
-    <p>You are signed in</p>
-    <a href="{% url 'logout' %}">logout</a>
-    {% else %}
-    <p>You are not signed in</p>
-    <a href="{% url 'login' %}">Login</a>
-    {% endif %}
-</body>
-</html>
+{% extends "template_base.html" %}
+
+{% block content %}
+{% include "nav.html" %}
+{% include "sidebar.html" %}
+{% include "messages.html" %}
+<h2>Welcome {{ request.user.username }}!</h2>
+<p>This is just to test this page!</p>
+
+<p>You are signed in</p>
+
+<div class="organisation-list">
+
+</div>
+<a href="{% url 'create-organisation' %}">Create Organisation</a>
+{% endblock content %}
+
+
+{% block scripts %}
+<script>
+    /**
+     * Variables
+     */
+    const organisationList = document.querySelector('.organisation-list')
+
+    /**
+     * Functions
+     */
+    function getCookie(name) {
+        let cookieValue = null;
+
+        if (document.cookie && document.cookie !== '') {
+            cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name.length + 1)) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    async function getOragnisations() {
+        url = 'http://127.0.0.1:8000/api/v1/organisations/'
+        await fetch(url, {
+            'method':'GET',
+            'credentials': 'include',
+            'headers': {
+                'X-CSRFToken': getCookie('csrftoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Success: ", data)
+            for (let i = 0; i < data.length; i++) {
+
+                const html = `
+                    <div class="organisation-item">
+                        <p>${data[i].name} - ${data[i].total_debt}</p>
+                    </div>`
+                organisationList.innerHTML += html;
+            }
+            
+        })
+        .catch(error => {
+            console.log("Error:", error)
+        })
+    }
+
+    getOragnisations()
+</script>
+{% endblock scripts %}

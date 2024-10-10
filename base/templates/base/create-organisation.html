@@ -1,0 +1,13 @@
+{% extends "template_base.html" %}
+
+{% block content %}
+<a href="{{ previous_url }}">Back</a>
+<form action="#" method="post">
+    {% csrf_token %}
+    {% include "messages.html" %}
+    {{ form.as_p }}
+    <input type="submit" value="Create">
+</form>
+
+{% endblock content %}
+

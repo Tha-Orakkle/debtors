@@ -1,0 +1,37 @@
+{% extends "template_base.html" %}
+
+{% load filters %}
+
+{% block content %}
+{% include "messages.html" %}
+<p>{{ customer.name }} in {{ customer.organisation.name }}</p>
+
+<a href="#" id="openTransForm">Add Transaction</a>
+{% comment %} <a href="{% url 'create-transaction' org_id=customer.organisation.id %}?cus_id={{ customer.id }}">Add Transaction</a> {% endcomment %}
+
+<table style="border: 1px solid black;">
+    <tr>
+        <th>Date</th>
+        <th>Transaction Type</th>
+        <th>Previous Debt (&#8358;)</th>
+        <th>New Amount (&#8358;)</th>
+        <th>Amount Paid (&#8358;)</th>
+        <th>Mode of Payment</th>
+        <th>Balance (&#8358;)</th>
+    </tr>
+    {% for transaction in transactions %}
+    <tr>
+        <td>{{ transaction.date_of_transaction }}</td>
+        <td>{{ transaction.transaction_type }}</td>
+        <td>{{ transaction.prev_amount|_float }}</td>
+        <td>{{ transaction.new_amount|_float }}</td>
+        <td>{{ transaction.amount_paid|_float }}</td>
+        <td>{{ transaction.mode_of_payment }}</td>
+        <td>{{ transaction.balance|_float }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% include "base/partials/add-transaction.html" %}
+
+{% endblock content %}

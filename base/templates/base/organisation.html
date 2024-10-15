@@ -1,0 +1,25 @@
+{% extends "template_base.html" %}
+{% load filters %}
+{% block content %}
+{% include "messages.html" %}
+
+{% comment %} <p>{{ organisation.name }} <a href="/update-organisation/{{ organisation.id }}/">Edit Business details</a></p>  {% endcomment %}
+<p>{{ organisation.name }} <a href="{% url 'update-organisation' org_id=organisation.id %}">Edit Business details</a></p> 
+
+<p>Total Debt = &#8358;{{ organisation.total_debt|_float }}</p>
+
+<h2>Debtors</h2>
+<hr>
+{% if transactions %}
+{% for transaction in transactions %}
+<p><a href="{% url 'customer' org_id=organisation.id cus_id=transaction.customer.id  %}">{{ transaction.customer.name }}</a> -- &#8358;{{ transaction.balance|_float}}</p> 
+{% endfor %}
+{% endif %}
+<hr>
+<a href="#" id="openCusForm">Add Customer</a>
+<a href="#" id="openTransForm">Add Transaction</a>
+
+{% comment %} <a href="{% url 'create-transaction' org_id=organisation.id %}">Add Transaction</a> {% endcomment %}
+{% include "base/partials/add-customer.html" %}
+{% include "base/partials/add-transaction.html" %}
+{% endblock content %}

@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal
 from django.db.models import Q
 from rest_framework import status
@@ -6,7 +7,7 @@ from rest_framework.views import APIView, Response
 from base.models import Customer, Transaction
 from .error_views import CustomAPIException
 from .helper import strConvertDecimal, updateLaterTransactions
-from .serializers import TransactionSerializer
+from .serializers import TransactionSerializer, CustomerSerializer
 
 
 class CustomerTransactionView(APIView):
@@ -31,7 +32,10 @@ class CustomerTransactionView(APIView):
             serializer = TransactionSerializer(transaction)
             return Response(serializer.data)
         serializer = TransactionSerializer(transactions, many=True)
-        return Response(serializer.data)
+        return Response({
+            'customer': CustomerSerializer(customer).data,
+            'transactions': serializer.data
+            })
         
 
     def post(self, request, **kwargs):
@@ -50,6 +54,8 @@ class CustomerTransactionView(APIView):
 
         prev_debt = last_transaction.balance if last_transaction else Decimal(0.0)
         transaction_type = request.data.get('transaction_type')
+        date_of_transaction = datetime.strptime(
+            request.data.get('date_of_transaction'), '%Y-%m-%d').date()
         ap = request.data.get('amount_paid')
         amount_paid = strConvertDecimal(ap) if ap else Decimal(0)
         mode = request.data.get("mode_of_payment") if amount_paid > 0 else None
@@ -86,12 +92,13 @@ class CustomerTransactionView(APIView):
                 new_amount=new_amount,
                 amount_paid=amount_paid,
                 mode_of_payment=mode,
-                balance=balance
+                balance=balance,
+                date_of_transaction=date_of_transaction
             )
         organisation.total_debt = (organisation.total_debt -  prev_debt) + balance
         organisation.save()
         serializer = TransactionSerializer(new_transaction)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
 
     def put(self, request, **kwargs):

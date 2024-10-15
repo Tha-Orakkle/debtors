@@ -5,6 +5,7 @@ from django.utils import timezone
 from rest_framework.authtoken.models import Token
 from phonenumber_field.modelfields import PhoneNumberField
 import uuid
+import datetime
 
 
 class User(AbstractUser):
@@ -67,7 +68,7 @@ class Transaction(models.Model):
     amount_paid = models.DecimalField(max_digits=11, decimal_places=2, null=True)
     mode_of_payment = models.CharField(max_length=20, choices=MODE_OF_PAYMENT, null=True)
     balance = models.DecimalField(max_digits=12, decimal_places=2)
-    date_of_payment = models.DateTimeField(default=timezone.now)
+    date_of_transaction = models.DateField(default=datetime.date.today)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

@@ -1,101 +1,112 @@
-{% extends "template_base.html" %}
-
 {% load static %}
 
-{% block content %}
-<div class="login-container">
-  
-  <div id="login-bg" class="login-container-item">
-    <img src="{% static 'images/bg-login_2.png' %}" alt="" id="">
-    <!-- icon  -->
-    <!-- <p>DEBTORS</p> -->
-  </div>
-  
-  <div id="login-form-wrapper" class="login-container-item{% if page != 'login' %} hidden{% endif %}">
-    <h1 class="form-header">Log In</h1>
-    <form action="" method="post" id="login-form">
-      {% csrf_token %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} - Debtors</title>
 
-      {% include "messages.html" %}
-      
-      <div class="form-item">
-        <label for="_email">Email address</label><br>
-        <input type="email" name="email" id="_email" placeholder="example@email.com">
-      </div>
-      <div class="form-item">
-        <label for="_password">Password</label><br>
-        <input type="password" name="password" id="_password" placeholder="****************">
-      </div> 
-
-      <div class="form-item">
-        <input type="submit" class="login-form-submit" value="Log In">
-      </div>
-  
-    </form>
-    <div class="create-or-sign">
-      <p>Don't have an account? <a href="{% url 'register' %}">create one</a></p>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+</head>
+<body>
+  <div class="login-container">
+    
+    <div id="login-bg" class="login-container-item">
+      <img src="{% static 'images/bg-login_2.png' %}" alt="" id="">
+      <!-- icon  -->
+      <!-- <p>DEBTORS</p> -->
     </div>
-  </div>
+    
+    <div id="login-form-wrapper" class="login-container-item{% if page != 'login' %} hidden{% endif %}">
+      <h1 class="form-header">Log In</h1>
+      <form action="" method="post" id="login-form">
+        {% csrf_token %}
 
-  <div id="register-form-wrapper" class="login-container-item{% if page == 'login' %} hidden{% endif %}">
+        {% include "messages.html" %}
+        
+        <div class="form-item">
+          <label for="_email">Email address</label><br>
+          <input type="email" name="email" id="_email" placeholder="example@email.com">
+        </div>
+        <div class="form-item">
+          <label for="_password">Password</label><br>
+          <input type="password" name="password" id="_password" placeholder="****************">
+        </div> 
 
-    <h1 class="form-header">Register as a Business Owner</h1>
-    <form action="" method="post" id="create-form">
-      {% csrf_token %}
-
-      {% include "messages.html" %}
-
-      <div class="form-item">
-        <label for="username">Username</label><br>
-        <input type="text" name="username" id="username">
+        <div class="form-item">
+          <input type="submit" class="login-form-submit" value="Log In">
+        </div>
+    
+      </form>
+      <div class="create-or-sign">
+        <p>Don't have an account? <a href="{% url 'register' %}">create one</a></p>
       </div>
-
-      <div class="form-item">
-        <label for="first_name">First name <span class="required">*</span></label><br>
-        <input type="text" name="first_name" id="first_name" required>
-      </div>
-
-      <div class="form-item">
-        <label for="last_name">Last name <span class="required">*</span></label><br>
-        <input type="text" name="last_name" id="last_name" required>
-      </div>
-
-      <div class="form-item">
-        <label for="other_name">Other name</label><br>
-        <input type="text" name="other_name" id="other_name">
-      </div>
-   
-      <div class="form-item">
-        <label for="email">Email address <span class="required">*</span></label><br>
-        <input type="email" name="email" id="email" placeholder="example@email.com" required>
-      </div>
-
-      <div class="form-item">
-        <label for="telephone">Phone number</label><br>
-        <input type="tel" name="telephone" id="telephone" placeholder="+2348121111222 i.e with the country code">
-      </div>
-      
-      <div class="form-item">
-        <label for="password1">Password <span class="required">*</span></label><br>
-        <input type="password" name="password1" id="password1" placeholder="****************" required>
-      </div>
-
-      <div class="form-item">
-        <label for="password2">Confirm Password <span class="required">*</span></label><br>
-        <input type="password" name="password2" id="password2" placeholder="****************" required>
-      </div> 
-
-      <div class="form-item">
-        <input type="submit" class="login-form-submit" value="Register">
-      </div>
-  
-    </form>
-    <div class="create-or-sign">
-      <p>Already have an account? <a href="{% url 'login' %}">Log In</a></p>
     </div>
+
+    <div id="register-form-wrapper" class="login-container-item{% if page == 'login' %} hidden{% endif %}">
+
+      <h1 class="form-header">Register as a Business Owner</h1>
+      <form action="" method="post" id="create-form">
+        {% csrf_token %}
+
+        {% include "messages.html" %}
+
+        <div class="form-item">
+          <label for="username">Username</label><br>
+          <input type="text" name="username" id="username">
+        </div>
+
+        <div class="form-item">
+          <label for="first_name">First name <span class="required">*</span></label><br>
+          <input type="text" name="first_name" id="first_name" required>
+        </div>
+
+        <div class="form-item">
+          <label for="last_name">Last name <span class="required">*</span></label><br>
+          <input type="text" name="last_name" id="last_name" required>
+        </div>
+
+        <div class="form-item">
+          <label for="other_name">Other name</label><br>
+          <input type="text" name="other_name" id="other_name">
+        </div>
+    
+        <div class="form-item">
+          <label for="email">Email address <span class="required">*</span></label><br>
+          <input type="email" name="email" id="email" placeholder="example@email.com" required>
+        </div>
+
+        <div class="form-item">
+          <label for="telephone">Phone number</label><br>
+          <input type="tel" name="telephone" id="telephone" placeholder="+2348121111222 i.e with the country code">
+        </div>
+        
+        <div class="form-item">
+          <label for="password1">Password <span class="required">*</span></label><br>
+          <input type="password" name="password1" id="password1" placeholder="****************" required>
+        </div>
+
+        <div class="form-item">
+          <label for="password2">Confirm Password <span class="required">*</span></label><br>
+          <input type="password" name="password2" id="password2" placeholder="****************" required>
+        </div> 
+
+        <div class="form-item">
+          <input type="submit" class="login-form-submit" value="Register">
+        </div>
+    
+      </form>
+      <div class="create-or-sign">
+        <p>Already have an account? <a href="{% url 'login' %}">Log In</a></p>
+      </div>
+    </div>
+
+
+
   </div>
-
-
-
-</div>
-{% endblock content %}
+</body>
+</html>

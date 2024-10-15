@@ -5,7 +5,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView, Response
 
-from .serializers import OrganisationSerializer, TransactionSerializer
+from .serializers import OrganisationSerializer, TransactionSerializer, CustomerSerializer
 from .error_views import CustomAPIException
 from base.backends.authenticate import ExpiredTokenAuthentication
 from base.models import Organisation
@@ -48,7 +48,7 @@ class OrganisationView(APIView):
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-    def put(self, request, pk=None):
+    def put(self, request, pk):
         """Updates an Organisation Object"""
         organisation = request.user.organisation_set.filter(id=pk).first()
         if not organisation:
@@ -76,18 +76,19 @@ class DebtorsView(APIView):
         organisation = Organisation.objects.filter(
             Q(owner=request.user) & Q(id=org_id)
         ).first()
-        sum = Decimal(0)
-        debtors = []
-        customers = organisation.customer_set.all()
+        if not organisation:
+            raise CustomAPIException("Invalid Organisation ID", status.HTTP_400_BAD_REQUEST)
+        transactions = []
+        customers = organisation.customer_set.all().order_by('name')
         for customer in customers:
             customer_tran = customer.transaction_set.first()
             if customer_tran:
                 if customer_tran.balance > 0:
-                    debtors.append(customer_tran)
-                    sum += customer_tran.balance
-        serializer = TransactionSerializer(debtors, many=True)
+                    transactions.append(customer_tran)
+        serializer = TransactionSerializer(transactions, many=True)
         return Response({
-            "total_debt": sum,
-            "debtors": serializer.data
+            "organisation": OrganisationSerializer(organisation).data,
+            "customers": CustomerSerializer(customers, many=True).data,
+            "transactions": serializer.data
         })
     

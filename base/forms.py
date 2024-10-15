@@ -16,3 +16,9 @@ class CreateOrganisationForm(forms.ModelForm):
     class Meta:
         model = Organisation
         fields = ["name", "email", "address"]
+        
+
+class UpdateOrganisationForm(forms.ModelForm):
+    class Meta:
+        model = Organisation
+        fields = ["name", "email", "address", "telephone"]

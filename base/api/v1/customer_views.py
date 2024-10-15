@@ -38,7 +38,7 @@ class CustomerView(APIView):
             raise CustomAPIException("Invalid Organisation Id", status.HTTP_400_BAD_REQUEST)
         if not request.data.get('name'):
             raise CustomAPIException("Name not valid", status.HTTP_400_BAD_REQUEST)
-        name = request.data['name'].lower().strip()
+        name = request.data['name'].title().strip()
         try:
             if organisation.customer_set.filter(name=name):
                 raise CustomAPIException("Customer already exists", status.HTTP_400_BAD_REQUEST)

@@ -1,0 +1,89 @@
+<div class="modal" id="transPopupForm">
+    <div class="modal-content">
+        <span class="close" onclick="closeForm()">&times;</span>
+        <h2>Add New Transaction</h2>
+        <form action="{% url 'create-transaction' org_id=organisation.id %}" method="post">
+            {% csrf_token %}
+            <div>
+                <label for="customer">Customer</label>
+                <select name="customer_id" id="customer">
+                    {% if customer %}<option value="{{ customer.id }}">{{ customer.name }}</option>{% endif %}
+
+                    {% for cus in customers %} {% if cus.name != customer.name %}
+                    <option value="{{ cus.id }}">{{ cus.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <a href="#" id="openForm">Add New</a><br>
+            </div>
+            <div>
+                <label for="transaction_type">Transaction type</label>
+                <select name="transaction_type" id="transaction_type" onchange="transactionToggleField()">
+                    <option value="new_transaction">New Transaction</option>
+                    <option value="payment">Payment</option>
+                </select>
+            </div>
+            <div>
+                <label for="new_amount">Total Amount</label>
+                <input type="number" name="new_amount" id="new_amount">
+            </div>
+            
+            <div>
+                <label for="amount_paid">Amount Paid</label>
+                <input type="number" name="amount_paid" id="amount_paid">
+            </div>
+            <div>
+                <label for="mode_of_payment">Mode of Payment</label>
+                <select name="mode_of_payment" id="mode_of_payment">
+                    <option value="cash">Cash</option>
+                    <option value="bank_transaction">Bank Transaction</option>
+                </select>
+            </div>
+            <div>
+                <label for="date_of_transaction">Date of transaction</label>
+                <input type="date" name="date_of_transaction" id="date_of_transaction" required>
+            </div>
+        
+            <div>
+                <input type="submit" value="Submit">
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{% block scripts %}
+<script>
+    /**
+    * Variables
+    */
+    const transPopupFormElement = document.getElementById('transPopupForm');
+    const openTransFormElement = document.getElementById('openTransForm');
+
+    /**
+     * Functions
+     */
+    function transactionToggleField() {
+        const transactionTypeElement = document.getElementById('transaction_type');
+        const newAmountElement = document.getElementById('new_amount');
+
+        if (transactionTypeElement.value === 'payment') {
+            newAmountElement.disabled = true;
+        } else {
+            newAmountElement.disabled = false;
+        }
+    }
+
+
+    /**
+     * Event Listeners
+     */
+
+    openTransFormElement.onclick = function(e) {
+        e.preventDefault();
+        transPopupFormElement.style.display = 'block';
+    }
+ 
+
+</script>
+{% endblock scripts %}

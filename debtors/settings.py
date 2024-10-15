@@ -60,7 +60,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
+    # custom middleware
     'base.backends.middleware.TokenCookieToHeaderMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'debtors.urls'
